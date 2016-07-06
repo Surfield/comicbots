@@ -20,7 +20,7 @@ agent = Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
 #   url = "#{web_address}#{num}/"
 #   puts url
 #   puts num
-base =  ENV['POSTGRES_USERNAME']
+base =  ENV['SITE']
 (1..419649).each do |num|
   url = base + "#{num}/"
   page = agent.get(url)
