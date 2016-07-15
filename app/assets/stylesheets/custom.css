@@ -1,0 +1,10 @@
+.no-gutter > [class*='col-'] {
+    padding-right:0;
+    padding-left:0px;
+    border: 2px solid #f8fad7;
+}
+
+.sizer {
+    height:100px;
+    width:100%;
+}

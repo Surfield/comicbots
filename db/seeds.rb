@@ -13,17 +13,22 @@ require 'base64'
 p Encoding.default_external
 
 agent = Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
-# comic = Comic.last.url
-# number = comic[[28..-2]].to_i
-# web_address = comic[0..27]
-# (number..419649).each do |num|
-#   url = "#{web_address}#{num}/"
-#   puts url
-#   puts num
-base =  ENV['SITE']
-(1..419649).each do |num|
-  url = base + "#{num}/"
+comic = Comic.last.url
+number = comic[28..-2].to_i
+web_address = comic[0..27]
+(number..419649).each do |num|
+  url = "#{web_address}#{num}/"
+  puts url
+  puts num
+# base =  ENV['SITE']
+# (1..419649).each do |num|
+#   url = base + "#{num}/"
+  begin
   page = agent.get(url)
+  rescue Exception => e
+    puts e
+    next
+  end
   html_results = Nokogiri::HTML(page.body)
   if html_results.at_css('.no_cover').nil?
     series = ''
