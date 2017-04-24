@@ -5,6 +5,7 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <!-- <link href="../../assets/stylesheets/bootstrap.min.css" rel="stylesheet"> -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 </head>
 <body>
@@ -18,12 +19,21 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">ComicBots</a>
-      <form class="" role="search" style="width:475px; margin-top: 8px;">
+      <form class="" role="" style="width:475px; margin-top: 8px;">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for...">
+          <input id="search" type="text" class="form-control" placeholder="Search for..." >
       			<span class="input-group-btn">
         			<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
         		</span>
+        </div>
+        <div class="container">
+        <div id="search-results" class="dropdown col-xs-offset-3 col-sm-offset-2 col-md-offset-1">
+            <ul id="search-results-menu" class="dropdown-menu">
+              <li><a href="#">HTML</a></li>
+              <li><a href="#">CSS</a></li>
+              <li><a href="#">JavaScript</a></li>
+            </ul>
+          </div>
         </div>
       </form>
     </div>
@@ -51,8 +61,49 @@
 <div class="container-fluid">
 <%= yield %>
 </div>
+<!-- <script src="../../assets/javascript/jquery.min.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <!--https://code.jquery.com/jquery-3.0.0.min.js-->
+<!-- <script src="../../assets/javascript/bootstrap.min.js"></script> -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript"> 
+    $(document).ready(function () { 
+      $('#search').keyup(function () { 
+        if ($(search).val().length > 0){
+          $('#search-results').show();
+          $('#search-results-menu').show();
+          // $('.dropdown-toggle').dropdown();
+        }else{
+          $('#search-results').hide();
+          $('#search-results-menu').hide();
+        }
+        var requestData = $('#search').val();
+        $.ajax({ 
+          url: 'http://comicbots.herokuapp.com/search', //+requestData
+          method: 'get', 
+          dataType: 'json', 
+          data: {'query' : requestData},
+          success: function (response) { 
+            if (response.message != null) { 
+              // resultElement.html(response.message); 
+              console.log(response.message);
+            } else { 
+              var arr = JSON.parse(response.body).hits.hits;
+              var str = '';
+              for (var i = 0; i < arr.length; i++) {
+                    str +='<ul>'+arr[i]._source.series+'</ul>'; 
+              }
+              $('#search-results-menu').html(str); 
+              console.log(response);
+              console.log(JSON.parse(response.body).hits.hits);
+            }
+          }, 
+          error: function (err) { 
+            console.log(err); 
+          }
+        });
+      }); 
+    });
+  </script>
 </body>
 </html>
