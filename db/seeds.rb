@@ -17,7 +17,7 @@ comic = Comic.last.url
 number = comic[28..-2].to_i
 web_address = comic[0..27]
 elastic_map = ENV['ELASTIC_MAP']
-elastic_search = ENV['ELASTIC_SEARCH']
+elastic_search_url = ENV['ELASTIC_SEARCH']
 (number..419649).each do |num|
   url = "#{web_address}#{num}/"
   puts url
@@ -54,7 +54,7 @@ elastic_search = ENV['ELASTIC_SEARCH']
     elastic_search = Comic.create(url: url, series: series, issue: issue, title: title,
                  writer: writer, img_url: img_url, img64: img64, page: page)
     if elastic_search.id != nil
-      agent.post("#{elastic_search}#{elastic_map}#{elastic_search.id}", {"series"=> elastic_search.series, "issue"=> elastic_search.issue, "title"=> elastic_search.title, "writer"=> elastic_search.writer}.to_json, {'Content-Type' => 'application/json'})
+      agent.post("#{elastic_search_url}#{elastic_map}#{elastic_search.id}", {"series"=> elastic_search.series, "issue"=> elastic_search.issue, "title"=> elastic_search.title, "writer"=> elastic_search.writer}.to_json, {'Content-Type' => 'application/json'})
     end
   else
     puts "nope"
