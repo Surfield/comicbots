@@ -16,6 +16,8 @@ agent = Mechanize.new { |agent| agent.user_agent_alias = 'Mac Safari' }
 comic = Comic.last.url
 number = comic[28..-2].to_i
 web_address = comic[0..27]
+elastic_map = ENV['ELASTIC_MAP']
+elastic_search = ENV['ELASTIC_SEARCH']
 (number..419649).each do |num|
   url = "#{web_address}#{num}/"
   puts url
@@ -49,8 +51,11 @@ web_address = comic[0..27]
     str = uri.read
     img64 = "data:"+ str.content_type + ";base64," + Base64.encode64(str)
 
-    Comic.create(url: url, series: series, issue: issue, title: title,
+    elastic_search = Comic.create(url: url, series: series, issue: issue, title: title,
                  writer: writer, img_url: img_url, img64: img64, page: page)
+    if elastic_search.id != nil
+      agent.post("#{elastic_search}#{elastic_map}#{elastic_search.id}", {"series"=> elastic_search.series, "issue"=> elastic_search.issue, "title"=> elastic_search.title, "writer"=> elastic_search.writer}.to_json, {'Content-Type' => 'application/json'})
+    end
   else
     puts "nope"
   end
