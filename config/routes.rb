@@ -54,5 +54,6 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
   root 'comics#index'
+  get '/search' => 'comics#search'
 
 end
